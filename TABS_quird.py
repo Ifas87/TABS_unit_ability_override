@@ -15,7 +15,8 @@ recordbook = {}
 def overload(m):
     global recordbook
     filename = recordbook[m]
-
+    things = None
+    
     with open(filename, encoding = 'utf-8') as file:
         things = json.loads(file.read())
         things["m_combatMoves"] = 0
@@ -24,6 +25,9 @@ def overload(m):
         biglist = [move1, move1, move1, move2, move1, move1]
         things["m_combatMoves"] = json.dumps(biglist)
         print(things, m, filename)
+
+    with open(filename, "w") as file:
+        file.write(json.dumps(things))
     
 
 def generateFrames(folder_path, top):
@@ -31,7 +35,7 @@ def generateFrames(folder_path, top):
     
     for i, filename in enumerate(os.listdir(folder_path)):
         f = os.path.join(folder_path, filename)
-        if os.path.isfile(f) and filename.lower().endswith('.unit'):
+        if os.path.isfile(f) and filename.lower().endswith('.unit') and os.path.getsize(f) != 0:
             print(f)
             with open(f, encoding = 'utf-8') as file:
                 things = json.loads(file.read())
@@ -51,9 +55,8 @@ def main():
     
     
     dirname = ''
-    while dirname == '':
-        #root.withdraw()
-        dirname = askdirectory()
+    dirname = askdirectory()
+    if dirname != '':
         generateFrames(dirname, canvas)
 
     root.geometry("180x250")
